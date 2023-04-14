@@ -1,4 +1,10 @@
-## sbt project compiled with Scala 3
+# arrow-scala3
+
+effect system for scala3 modelled after kotlin's [arrow.kt](https://arrow-kt.io/), utilizing java 19's VirtualThreads and structured concurrency through [ox](https://github.com/softwaremill/ox)
+
+### Docs
+
+please see [tests](src/test/scala/EffectTest.scala)
 
 ### Usage
 
