@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
 scalacOptions := Seq(
   "-Wunused:all",
   "-Wvalue-discard",
-  "-deprecation"
+  "-deprecation",
+  "-Yexplicit-nulls"
 )
 
 javaOptions ++= Seq(

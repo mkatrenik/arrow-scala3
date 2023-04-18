@@ -168,6 +168,42 @@ class EffectTest extends AnyWordSpec with Matchers {
     effect { raise("boom") }.toEither should be(Left("boom"))
   }
 
+  "Either.bind() returns value" in {
+    effect {
+      Right(1).bind()
+    }.getOrElse(unreachable) should be(1)
+  }
+
+  "Either.bind() returns error" in {
+    effect {
+      Left("boom").bind()
+    }.fold(identity, unreachable) should be("boom")
+  }
+
+  "Either.bind() returns new error" in {
+    effect {
+      Left("boom").bind(1)
+    }.fold(identity, unreachable) should be(1)
+  }
+
+  "Option.bind() returns value" in {
+    effect {
+      Some(1).bind()
+    }.getOrElse(unreachable) should be(1)
+  }
+
+  "Option.bind() returns None as error" in {
+    effect {
+      None.bind()
+    }.fold(identity, unreachable) should be(None)
+  }
+
+  "Option.bind() returns new error" in {
+    effect {
+      None.bind(1)
+    }.fold(identity, unreachable) should be(1)
+  }
+
 //  "Can short-circuit immediately after suspending from nested blocks"
 
   "effect + fork works" in {

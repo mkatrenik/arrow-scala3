@@ -3,9 +3,10 @@ import ox.Ox.*
 import ox.Ox
 
 import scala.language.postfixOps
-import scala.util.Try
+import org.slf4j.Logger
 
-private val log = LoggerFactory.getLogger("Effect")
+private val log: Logger = LoggerFactory.getLogger("Effect").nn
+
 class RaiseCancellationException[E](val err: E) extends InterruptedException
 
 trait Raise[E] {
@@ -105,4 +106,3 @@ extension [E, T](option: Option[T])(using eff: Effect[E, T])
 extension [T](option: Option[T])(using eff: Effect[Option[Nothing], T])
   def bind(): T =
     option.getOrElse(eff.raise(None))
-
