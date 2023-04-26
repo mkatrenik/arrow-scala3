@@ -1,11 +1,7 @@
-import org.slf4j.LoggerFactory
+package io.github.mkatrenik.arrow
+
 import ox.Ox.*
 import ox.Ox
-
-import scala.language.postfixOps
-import org.slf4j.Logger
-
-private val log: Logger = LoggerFactory.getLogger("Effect").nn
 
 class RaiseCancellationException[E](val err: E) extends InterruptedException
 
@@ -17,7 +13,6 @@ trait Fold[E, T] {
   def fold[B](onRaise: E => B, onSuccess: T => B): B
 
   def fold[B](onCatch: Throwable => B, onRaise: E => B, onSuccess: T => B): B =
-    log.trace(s"calling fold3 on $this")
     try fold(onRaise, onSuccess)
     catch case e: Throwable => onCatch(e)
 
@@ -28,32 +23,22 @@ trait Fold[E, T] {
     fold[Option[T]](_ => None, it => Some(it))
 
   def getOrElse(recover: E => T): T =
-    log.trace(s"calling getOrElse on $this")
     fold(recover, identity)
 }
 
 type EffectContext[E, T] = Effect[E, T] ?=> Ox ?=> T
 
 class Effect[E, T](f: EffectContext[E, T]) extends Raise[E], Fold[E, T] {
-
-  log.debug(s"created Effect $this")
-
   def fold[B](onRaise: E => B, onSuccess: T => B): B =
-    log.trace(s"calling fold2 on $this")
     try
       val res = scoped(f(using this))
-      log.trace(s"result of effect: $res in $this")
       onSuccess(res)
     catch
       case e: RaiseCancellationException[E] => onRaise(e.err)
       case e: Throwable                     => throw e
 
   def catchAll(cb: Throwable => EffectContext[E, T]): Effect[E, T] = effect {
-    log.trace(s"calling catchAll on $this")
-
-    val res = fold(ex => scoped(cb(ex)), err => raise(err), identity)
-    log.trace(s"fold result: $res on $this")
-    res
+    fold(ex => scoped(cb(ex)), err => raise(err), identity)
   }
 
   def recover[E2](f: E => EffectContext[E2, T]): Effect[E2, T] = effect { fold(err => f(err), identity) }

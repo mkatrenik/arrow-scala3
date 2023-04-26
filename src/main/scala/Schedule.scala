@@ -1,3 +1,5 @@
+package io.github.mkatrenik.arrow
+
 import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.concurrent.duration.Duration

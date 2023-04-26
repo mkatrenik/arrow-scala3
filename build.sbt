@@ -1,9 +1,11 @@
-//ThisBuild / scalaVersion := "3.3.0-RC3"
-scalaVersion := "3.3.1-RC1-bin-20230304-c610f18-NIGHTLY"
+organization := "io.github.mkatrenik"
+name := "arrow-scala"
+version := "0.1-SNAPSHOT"
+
+scalaVersion := "3.3.0-RC4"
 
 libraryDependencies ++= Seq(
   "com.softwaremill.ox" %% "core" % "0.0.5",
-  "ch.qos.logback" % "logback-classic" % "1.4.6",
   "org.scalatest" %% "scalatest" % "3.2.15" % Test
 )
 
@@ -13,6 +15,8 @@ scalacOptions := Seq(
   "-deprecation",
   "-Yexplicit-nulls"
 )
+
+fork := true
 
 javaOptions ++= Seq(
   "--enable-preview",
